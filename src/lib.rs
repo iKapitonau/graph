@@ -12,7 +12,10 @@ mod tests {
         let mut g = Graph::<String, u32>::new();
         assert_eq!(g.insert_node(1, "the first".to_string()), None);
         assert_eq!(g.insert_node(2, "the second".to_string()), None);
-        assert_eq!(g.insert_node(1, "the first_overrided".to_string()), Some("the first".to_string()));
+        assert_eq!(
+            g.insert_node(1, "the first_overrided".to_string()),
+            Some("the first".to_string())
+        );
         let mut sorted_vertices = g.traverse_bfs();
         sorted_vertices.sort();
         assert_eq!(sorted_vertices, vec![1, 2]);
@@ -117,11 +120,10 @@ impl<V: Display + FromStr, E: Display + FromStr> Graph<V, E> {
 
         let mut g = Graph::new();
         for line in vertices.lines() {
-            let (id, val) = line.split_once(' ').ok_or("value for each vertex is required")?;
-            g.insert_node(
-                id.trim().parse::<VertexId>()?,
-                val.trim().parse::<V>()?,
-            );
+            let (id, val) = line
+                .split_once(' ')
+                .ok_or("value for each vertex is required")?;
+            g.insert_node(id.trim().parse::<VertexId>()?, val.trim().parse::<V>()?);
         }
         for line in edges.lines() {
             let (from, suffix) = line.split_once(' ').ok_or("vertex_to is missing")?;
@@ -186,7 +188,7 @@ impl<V: Display + FromStr, E: Display + FromStr> Graph<V, E> {
     pub fn get_adjacents(&self, vertex: VertexId) -> Option<Vec<&VertexId>> {
         Some(self.adj_list.get(&vertex)?.keys().collect())
     }
-    
+
     pub fn get_vertex_value(&self, vertex: VertexId) -> Option<&V> {
         Some(self.vertices.get(&vertex)?)
     }
